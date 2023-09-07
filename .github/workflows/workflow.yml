@@ -20,7 +20,7 @@ jobs:
       - name: NPM Audit 
         env:
           JFROG_CLI_BUILD_NAME: 'github-ejs-demo'
-          JFROG_CLI_BUILD_NUMBER: ''
+          JF_ENV_1: ${{ secrets.JF_SECRET_ENV_1 }}
         run: |
           jf rt bce ${{ env.JFROG_CLI_BUILD_NAME }} $GITHUB_RUN_NUMBER
           jf rt bag ${{ env.JFROG_CLI_BUILD_NAME }} $GITHUB_RUN_NUMBER
@@ -28,6 +28,9 @@ jobs:
           jf npm ci --only=production --build-name=${{ env.JFROG_CLI_BUILD_NAME }} --build-number=$GITHUB_RUN_NUMBER
           jf audit --npm
       - name: Docker build 
+        env:
+          JFROG_CLI_BUILD_NAME: 'github-ejs-demo'
+          JF_ENV_1: ${{ secrets.JF_SECRET_ENV_1 }}
         run: |
           docker build --build-arg JF_TOKEN=${JF_ENV_1} . -t ejs-app:$GITHUB_RUN_NUMBER
           docker tag ejs-app:$GITHUB_RUN_NUMBER $JF_HOST/dro-backend-docker-dev-local/ejs-app:$GITHUB_RUN_NUMBER
