@@ -5,16 +5,14 @@ ARG JF_TOKEN
 WORKDIR /usr/src/app
 COPY package*.json ./
 RUN apt-get update && \
-    apt-get install -y curl make && \
+    apt-get install -y curl make ncat && \
     apt-get clean
 RUN curl -fL https://install-cli.jfrog.io | sh
 
-# added to ease demo for remote shell
-RUN apt-get install -y ncat
 # If you are building your code for production
-RUN jf c import ${JF_TOKEN}
-RUN jf npmc --repo-resolve=dro-npm-unsecure-remote
-RUN jf npm ci --only=production
+RUN jf c import ${JF_TOKEN} && \
+    jf npmc --repo-resolve=dro-npm-unsecure-remote && \
+    jf npm ci --only=production
 EXPOSE 3000
 
 COPY server.js ./
