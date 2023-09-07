@@ -1,13 +1,19 @@
 FROM node:18
+ARG JF_TOKEN
 
 # Create app directory
 WORKDIR /usr/src/app
 COPY package*.json ./
-RUN apt update
+RUN apt-get update && \
+    apt-get install -y curl make && \
+    apt-get clean
+RUN curl -fL https://install-cli.jfrog.io | sh
+
 # added to ease demo for remote shell
 RUN apt-get install -y ncat
 # If you are building your code for production
-RUN rm .npmrc; npm ci --only=production --omit=dev
+RUN jf c import ${JF_TOKEN}
+RUN jf npm ci --only=production
 EXPOSE 3000
 
 COPY server.js ./

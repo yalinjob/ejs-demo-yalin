@@ -25,11 +25,11 @@ jobs:
           jf rt bce ${{ env.JFROG_CLI_BUILD_NAME }} $GITHUB_RUN_NUMBER
           jf rt bag ${{ env.JFROG_CLI_BUILD_NAME }} $GITHUB_RUN_NUMBER
           jf npmc --repo-resolve dro-npm-unsecure-remote
-          jf npm ci --only=production --omit=dev --build-name=${{ env.JFROG_CLI_BUILD_NAME }} --build-number=$GITHUB_RUN_NUMBER
+          jf npm ci --only=production --build-name=${{ env.JFROG_CLI_BUILD_NAME }} --build-number=$GITHUB_RUN_NUMBER
           jf audit --npm
       - name: Docker build 
         run: |
-          docker build . -t ejs-app:$GITHUB_RUN_NUMBER
+          docker build --build-arg jf_env=${JF_ENV_1} . -t ejs-app:$GITHUB_RUN_NUMBER
           docker tag ejs-app:$GITHUB_RUN_NUMBER $JF_HOST/dro-backend-docker-dev-local/ejs-app:$GITHUB_RUN_NUMBER
           jf docker push $JF_HOST/dro-backend-docker-dev-local/ejs-app:$JFROG_CLI_BUILD_NUMBER --build-name=$JFROG_CLI_BUILD_NAME --build-number=$GITHUB_RUN_NUMBER 
           jf rt bp $JFROG_CLI_BUILD_NAME $GITHUB_RUN_NUMBER
