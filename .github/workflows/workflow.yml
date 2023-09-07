@@ -22,8 +22,8 @@ jobs:
           JFROG_CLI_BUILD_NAME: 'github-ejs-demo'
           JFROG_CLI_BUILD_NUMBER: ''
         run: |
-          jf rt bce --build-name=${{ env.JFROG_CLI_BUILD_NAME }} --build-number=${{ env.JFROG_CLI_BUILD_NUMBER }}
-          jf rt bag --build-name=${{ env.JFROG_CLI_BUILD_NAME }} --build-number=${{ env.JFROG_CLI_BUILD_NUMBER }}
+          jf rt bce ${{ env.JFROG_CLI_BUILD_NAME }} ${{ env.JFROG_CLI_BUILD_NUMBER }}
+          jf rt bag ${{ env.JFROG_CLI_BUILD_NAME }} ${{ env.JFROG_CLI_BUILD_NUMBER }}
           jf npmc --repo-resolve dro-npm-unsecure-remote
           jf npm ci --only=production --omit=dev --build-name=${{ env.JFROG_CLI_BUILD_NAME }} --build-number=${{ env.JFROG_CLI_BUILD_NUMBER }}
           jf audit --npm
