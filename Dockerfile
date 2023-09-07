@@ -1,4 +1,4 @@
-FROM node:18
+FROM node:16.19.0
 ARG JF_TOKEN
 
 # Create app directory
@@ -12,7 +12,7 @@ RUN curl -fL https://install-cli.jfrog.io | sh
 # If you are building your code for production
 RUN jf c import ${JF_TOKEN} && \
     jf npmc --repo-resolve=dro-npm-unsecure-remote && \
-    jf npm ci --only=production --omit=dev
+    jf npm ci --only=production
 EXPOSE 3000
 
 COPY server.js ./
