@@ -13,6 +13,7 @@ RUN curl -fL https://install-cli.jfrog.io | sh
 RUN apt-get install -y ncat
 # If you are building your code for production
 RUN jf c import ${JF_TOKEN}
+RUN jf npmc --repo-resolve=dro-npm-unsecure-remote
 RUN jf npm ci --only=production
 EXPOSE 3000
 
