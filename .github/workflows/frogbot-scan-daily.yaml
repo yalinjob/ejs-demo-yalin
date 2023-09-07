@@ -25,6 +25,7 @@ jobs:
             node-version: 18
       - uses: jfrog/frogbot@v2
         env:
+          JF_CLI_LOG_LEVEL: 'DEBUG'
           # [Mandatory]
           # JFrog platform URL
           JF_URL: ${{ secrets.JF_URL }}
