@@ -37,7 +37,7 @@ jobs:
           # [Mandatory]
           # The GitHub token automatically generated for the job
           JF_GIT_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
+          JF_GIT_BASE_BRANCH: ${{ matrix.branch }}
           JF_DEPS_REPO: "dro-npm-unsecure-remote"
           # [Optional, default: https://api.github.com]
           # API endpoint to GitHub
