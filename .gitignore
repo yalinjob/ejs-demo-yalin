@@ -1,2 +1,3 @@
 node_modules
 .jfrog
+package-lock.json
