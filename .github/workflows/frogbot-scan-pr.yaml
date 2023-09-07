@@ -34,7 +34,7 @@ jobs:
           # [Mandatory]
           # The GitHub token automatically generated for the job
           JF_GIT_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          JF_DEPS_REPO: "dro-npm-unsecure-remote"
+          JF_DEPS_REPO: "fgr-npm-remote"
           # [Optional, default: "TRUE"]
           # Fails the Frogbot task if any security issue is found.
           JF_FAIL: "FALSE"
