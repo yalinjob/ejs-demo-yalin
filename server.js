@@ -1,7 +1,7 @@
 var express = require('express');
 const bodyParser = require('body-parser');
 const lodash = require('lodash'); 
-//Object.freeze(Object.prototype);
+Object.freeze(Object.prototype);
 const evilsrc = {constructor: {prototype: {evilkey: "evilvalue"}}};
 lodash.defaultsDeep({}, evilsrc);
 
