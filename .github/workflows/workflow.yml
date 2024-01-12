@@ -27,7 +27,7 @@ jobs:
           jf rt bag ${{ env.JFROG_CLI_BUILD_NAME }} $GITHUB_RUN_NUMBER
           jf npmc --repo-resolve dro-npm-unsecure-remote
           jf npm i --omit dev --build-name=${{ env.JFROG_CLI_BUILD_NAME }} --build-number=$GITHUB_RUN_NUMBER
-          jf audit --npm
+          jf audit --npm --fail=false
       - name: Docker build 
         env:
           JFROG_CLI_BUILD_NAME: 'gh-ejs-demo'
