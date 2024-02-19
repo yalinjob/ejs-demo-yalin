@@ -7,7 +7,7 @@ jobs:
     # Here we install all the tools : docker buildx, QEMU, JDK 11, JFrog CLI
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       # Install prerequisites
       - name: Install Node
         uses: actions/setup-node@v3
