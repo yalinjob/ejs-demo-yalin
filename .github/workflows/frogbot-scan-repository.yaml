@@ -16,7 +16,7 @@ jobs:
         # The repository scanning will be triggered periodically on the following branches.
         branch: [ "main" ]
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           ref: ${{ matrix.branch }}
       - uses: jfrog/frogbot@v2
