@@ -3,7 +3,11 @@ on:
   workflow_dispatch:
 jobs:
   build:
-    runs-on: ubuntu-latest
+    permissions:
+      runs-on: ubuntu-latest
+      id-token: write
+      contents: read
+      attestations: write    
     # Here we install all the tools : docker buildx, QEMU, JDK 11, JFrog CLI
     steps:
       - name: Checkout
@@ -29,6 +33,7 @@ jobs:
           jf npm i --omit dev --build-name=${{ env.JFROG_CLI_BUILD_NAME }} --build-number=$GITHUB_RUN_NUMBER
           jf audit --npm --fail=false
       - name: Docker build 
+        id: docker-build  
         env:
           JFROG_CLI_BUILD_NAME: 'gh-ejs-demo'
           JF_ENV_1: ${{ secrets.JF_SECRET_ENV_1 }}
@@ -37,5 +42,22 @@ jobs:
         run: |
           docker build --build-arg JF_TOKEN=${JF_ENV_1} . -t ejs-demo:$GITHUB_RUN_NUMBER
           docker tag ejs-demo:$GITHUB_RUN_NUMBER $JF_HOST/dro-backend-docker-dev-local/ejs-demo:$GITHUB_RUN_NUMBER
+          echo "digest=$(docker images --no-trunc --quiet $JF_HOST/dro-backend-docker-dev-local/ejs-demo:$GITHUB_RUN_NUMBER)\n" >> $GITHUB_OUTPUT
           jf docker push $JF_HOST/dro-backend-docker-dev-local/ejs-demo:$GITHUB_RUN_NUMBER --build-name=$JFROG_CLI_BUILD_NAME --build-number=$GITHUB_RUN_NUMBER 
-          jf rt bp $JFROG_CLI_BUILD_NAME $GITHUB_RUN_NUMBER
+      - name: Attest
+        uses: actions/attest-build-provenance@v1
+        id: attest
+        with:
+          # The subject name must be the image name
+          subject-name: '${{ secrets.JF_HOST }}/dro-backend-docker-dev-local/ejs-demo:$GITHUB_RUN_NUMBER'
+          subject-digest: ${{ steps.docker-build.outputs.digest }}
+      - name: Publish build info
+        id: publish-build  
+        env:
+          JFROG_CLI_BUILD_NAME: 'gh-ejs-demo'
+            JF_ENV_1: ${{ secrets.JF_SECRET_ENV_1 }}
+            JF_HOST: ${{ secrets.JF_HOST }}
+            JFROG_CLI_BUILD_PROJECT: dro
+        run: |
+           cat ${{ steps.bundle-path.outputs.digest }}
+           jf rt bp $JFROG_CLI_BUILD_NAME $GITHUB_RUN_NUMBER
