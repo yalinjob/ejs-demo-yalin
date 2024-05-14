@@ -56,7 +56,7 @@ jobs:
         id: attest
         with:
           # The subject name must be the image name
-          subject-name: '${{ secrets.JF_HOST }}/dro-oci-dev-local/ejs-demo:$GITHUB_RUN_NUMBER'
+          subject-name: ${{ secrets.JF_HOST }}/dro-oci-dev-local/ejs-demo
           subject-digest: ${{ steps.docker-build.outputs.digest }}
           push-to-registry: true
       - name: Publish build info
