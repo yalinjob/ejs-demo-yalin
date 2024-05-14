@@ -3,8 +3,8 @@ on:
   workflow_dispatch:
 jobs:
   build:
+    runs-on: ubuntu-latest
     permissions:
-      runs-on: ubuntu-latest
       id-token: write
       contents: read
       attestations: write    
@@ -55,9 +55,7 @@ jobs:
         id: publish-build  
         env:
           JFROG_CLI_BUILD_NAME: 'gh-ejs-demo'
-            JF_ENV_1: ${{ secrets.JF_SECRET_ENV_1 }}
-            JF_HOST: ${{ secrets.JF_HOST }}
-            JFROG_CLI_BUILD_PROJECT: dro
+          JFROG_CLI_BUILD_PROJECT: dro
         run: |
            cat ${{ steps.publish-build.outputs.bundle-path }}
            jf rt bp $JFROG_CLI_BUILD_NAME $GITHUB_RUN_NUMBER
