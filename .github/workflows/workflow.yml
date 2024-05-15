@@ -8,6 +8,7 @@ jobs:
       id-token: write
       contents: read
       attestations: write    
+      packages: write
     # Here we install all the tools : docker buildx, QEMU, JDK 11, JFrog CLI
     steps:
       - name: Checkout
