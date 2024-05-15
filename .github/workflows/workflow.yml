@@ -17,13 +17,7 @@ jobs:
       - name: Install Node
         uses: actions/setup-node@v3
         with:
-            node-version: 18
-      - name: Install Cosign
-        uses: sigstore/cosign-installer@v3.5.0
-        with:
-          cosign-release: 'v2.2.4'
-      - name: Check cosign install!
-        run: cosign version            
+            node-version: 18 
       - name: Setup JFrog CLI
         uses: jfrog/setup-jfrog-cli@v3
         env:
@@ -56,10 +50,10 @@ jobs:
         uses: actions/attest-build-provenance@v1
         id: attest
         with:
-          # The subject name must be the image name
+          # The subject name must be the image name without tag
           subject-name: ${{ secrets.JF_HOST }}/dro-oci-dev-local/ejs-demo
-          subject-digest: ${{ steps.docker-build.outputs.digest }}
-          push-to-registry: true
+          subject-digest: ${{ steps.docker-build.outputs.digest }} #format must be SHA256:<hexvalue>
+          push-to-registry: false
       - name: Publish build info
         id: publish-build  
         env:
