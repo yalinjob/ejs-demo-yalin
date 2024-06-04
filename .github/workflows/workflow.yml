@@ -25,7 +25,8 @@ jobs:
           JF_URL: https://${{ vars.JF_URL }}/
           JF_PROJECT: ${{ vars.JF_PROJECT_KEY }}
         with:
-            oidc-provider-name: davidro-github-integration   
+            oidc-provider-name: davidro-github-integration
+            oidc-audience: davidro-github
       - name: NPM Audit 
         env:
           JFROG_CLI_BUILD_NAME: 'gh-ejs-demo'
