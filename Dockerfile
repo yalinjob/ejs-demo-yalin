@@ -10,9 +10,7 @@ RUN apt-get update && \
 RUN curl -fL https://install-cli.jfrog.io | sh
 
 # If you are building your code for production
-RUN jf c import ${JF_TOKEN} && \
-    jf npmc --repo-resolve=dro-npm-unsecure-remote && \
-    jf npm i --omit dev
+RUN npm i --omit dev
 EXPOSE 3000
 
 COPY server.js ./
