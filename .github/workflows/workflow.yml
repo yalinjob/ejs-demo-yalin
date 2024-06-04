@@ -22,7 +22,7 @@ jobs:
       - name: Setup JFrog CLI
         uses: jfrog/setup-jfrog-cli@v4
         env:
-          JF_URL: https://${{ vars.JF_URL }}/
+          JF_URL: https://${{ vars.JF_HOST }}/
           JF_PROJECT: ${{ vars.JF_PROJECT_KEY }}
         with:
             oidc-provider-name: davidro-github-integration
@@ -30,8 +30,8 @@ jobs:
       - name: NPM Audit 
         env:
           JFROG_CLI_BUILD_NAME: 'gh-ejs-demo'
-          JF_URL: https://${{ vars.JF_URL }}/
-          JF_HOST: ${{ vars.JF_URL }}
+          JF_URL: https://${{ vars.JF_HOST }}/
+          JF_HOST: ${{ vars.JF_HOST }}
           JF_PROJECT: ${{ vars.JF_PROJECT_KEY }}
         run: |
           jf rt bce ${{ env.JFROG_CLI_BUILD_NAME }} $GITHUB_RUN_NUMBER 
@@ -43,7 +43,7 @@ jobs:
         id: docker-build  
         env:
           JFROG_CLI_BUILD_NAME: 'gh-ejs-demo'
-          JF_HOST: ${{ secrets.JF_HOST }}
+          JF_HOST: ${{ vars.JF_HOST }}
           JF_PROJECT: ${{ vars.JF_PROJECT_KEY }}
         run: |
           docker build --build-arg JF_TOKEN=${JF_ENV_1} . -t ejs-demo:$GITHUB_RUN_NUMBER
