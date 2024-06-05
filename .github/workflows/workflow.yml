@@ -57,7 +57,7 @@ jobs:
         with:
           push: true
           platforms: linux/amd64 #, linux/arm64
-          tags: ${{ vars.JF_URL }}/${{ env.DOCKER_REPO }}/${{ env.IMAGE_NAME }}
+          tags: ${{ vars.JF_HOST }}/${{ env.DOCKER_REPO }}/${{ env.IMAGE_NAME }}
       # docker xray scanning
       - name: docker Publish and scan
         id: docker-publish
