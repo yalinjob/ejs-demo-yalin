@@ -1,7 +1,6 @@
 var express = require('express');
 const bodyParser = require('body-parser');
 const lodash = require('lodash'); 
-//Object.freeze(Object.prototype);
 const evilsrc = {constructor: {prototype: {evilkey: "evilvalue"}}};
 lodash.defaultsDeep({}, evilsrc);
 
@@ -22,14 +21,12 @@ app.get('/', function(req, res) {
   if (!req.query.hasOwnProperty('id')){
     req.query.id = 'Stranger';
   }
-  //Object.freeze(Object.prototype);
   res.render('pages/index',req.query);
 });
 // This api call, can be used to change ejs opts.outputFunctionName, hence creating a webshell 
 app.post("/fear", (req, res) => {
   let data = {};
   let input = req.body.content;
-  //Object.freeze(Object.prototype);
   lodash.defaultsDeep(data, input);
   res.json({message: `default response message for an expected payload! - content is ${input}`});
 });
