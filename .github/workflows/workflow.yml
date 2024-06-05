@@ -4,6 +4,9 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+      DOCKER_REPO: 'dro-oci-dev-local'
+      IMAGE_NAME: 'ejs-demo:${{ github.run_number }}'
     permissions:
       id-token: write
       contents: read
@@ -39,33 +42,43 @@ jobs:
           jf npmc --repo-resolve dro-npm-unsecure-remote
           jf npm i --omit dev --build-name=${{ env.JFROG_CLI_BUILD_NAME }} --build-number=$GITHUB_RUN_NUMBER
           jf audit --npm --fail=false
-      - name: Docker build 
-        id: docker-build  
-        env:
-          JFROG_CLI_BUILD_NAME: 'gh-ejs-demo'
-          JF_HOST: ${{ vars.JF_HOST }}
-          JF_PROJECT: ${{ vars.JF_PROJECT_KEY }}
-        run: |
-          docker build --build-arg JF_TOKEN=${JF_ENV_1} . -t ejs-demo:$GITHUB_RUN_NUMBER
-          docker tag ejs-demo:$GITHUB_RUN_NUMBER $JF_HOST/dro-oci-dev-local/ejs-demo:$GITHUB_RUN_NUMBER
-          jf docker push $JF_HOST/dro-oci-dev-local/ejs-demo:$GITHUB_RUN_NUMBER --build-name=$JFROG_CLI_BUILD_NAME --build-number=$GITHUB_RUN_NUMBER 
-          docker images --no-trunc --quiet $JF_HOST/dro-oci-dev-local/ejs-demo:$GITHUB_RUN_NUMBER
-          echo "digest=$(docker images --no-trunc --quiet $JF_HOST/dro-oci-dev-local/ejs-demo:$GITHUB_RUN_NUMBER)" >> $GITHUB_OUTPUT
+      
+      - name: Authenticate Docker
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ vars.JF_HOST }}
+          username: ${{ steps.setup-cli.outputs.oidc-user }}
+          password: ${{ steps.setup-cli.outputs.oidc-token }}
+      # docker image build
+      - name: Build Docker image
+        uses: docker/build-push-action@v5
+        id: build
+        with:
+          push: true
+          platforms: linux/amd64 #, linux/arm64
+          tags: ${{ vars.JF_URL }}/${{ env.DOCKER_REPO }}/${{ env.IMAGE_NAME }}
+      # docker xray scanning
+      - name: docker Publish and scan
+        id: docker-publish
+        run: |  
+          jf docker pull ${{ vars.JF_HOST }}/${{ env.DOCKER_REPO }}/${{ env.IMAGE_NAME }}
+          jf docker scan ${{ vars.JF_HOST }}/${{ env.DOCKER_REPO }}/${{ env.IMAGE_NAME }}   
+          echo "digest=$(docker images --no-trunc --quiet ${{ vars.JF_HOST }}/${{ env.DOCKER_REPO }}/${{ env.IMAGE_NAME }})" >> $GITHUB_OUTPUT
       - name: Attest
         uses: actions/attest-build-provenance@v1
         id: attest
         with:
           # The subject name must be the image name without tag
-          subject-name: ${{ secrets.JF_HOST }}/dro-oci-dev-local/ejs-demo
-          subject-digest: ${{ steps.docker-build.outputs.digest }} #format must be SHA256:<hexvalue>
+          subject-name: ${{ vars.JF_HOST }}/${{ env.DOCKER_REPO }}/ejs-demo
+          subject-digest: ${{ steps.docker-publish.outputs.digest }} #format must be SHA256:<hexvalue>
           push-to-registry: false
-      - name: Publish build info
+      - name: Publish build info & scan build
         id: publish-build  
         env:
           JFROG_CLI_BUILD_NAME: 'gh-ejs-demo'
           JF_URL: https://${{ vars.JF_HOST }}/
-
           JF_PROJECT: ${{ vars.JF_PROJECT_KEY }}
         run: |
            cat ${{ steps.attest.outputs.bundle-path }}
            jf rt bp $JFROG_CLI_BUILD_NAME $GITHUB_RUN_NUMBER
+           jf rt bs $JFROG_CLI_BUILD_NAME $GITHUB_RUN_NUMBER --fail=false
