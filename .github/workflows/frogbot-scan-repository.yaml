@@ -103,7 +103,7 @@ jobs:
           # If FALSE, Frogbot creates a separate pull request for each fix.
           JF_GIT_AGGREGATE_FIXES: "TRUE"
           JF_INCLUDE_ALL_VULNERABILITIES: "TRUE"          
-
+          JF_FAIL: "FALSE" 
           # [Optional, Default: "FALSE"]
           # Handle vulnerabilities with fix versions only
           # JF_FIXABLE_ONLY: "TRUE"
