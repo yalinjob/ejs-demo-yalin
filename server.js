@@ -21,6 +21,7 @@ app.get('/', function(req, res) {
   if (!req.query.hasOwnProperty('id')){
     req.query.id = 'Stranger';
   }
+  // vuln here
   res.render('pages/index',req.query);
 });
 // This api call, can be used to change ejs opts.outputFunctionName, hence creating a webshell 
