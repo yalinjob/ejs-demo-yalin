@@ -1,6 +1,7 @@
 var express = require('express');
 const bodyParser = require('body-parser');
 const lodash = require('lodash'); 
+
 const evilsrc = {constructor: {prototype: {evilkey: "evilvalue"}}};
 lodash.defaultsDeep({}, evilsrc);
 
@@ -21,6 +22,8 @@ app.get('/', function(req, res) {
   if (!req.query.hasOwnProperty('id')){
     req.query.id = 'Stranger';
   }
+  //evil code here
+
   res.render('pages/index',req.query);
 });
 // This api call, can be used to change ejs opts.outputFunctionName, hence creating a webshell 
