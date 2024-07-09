@@ -90,4 +90,4 @@ jobs:
           JF_PROJECT: ${{ vars.JF_PROJECT_KEY }}
         run: |
            jf rt bp $JFROG_CLI_BUILD_NAME $GITHUB_RUN_NUMBER
-           jf rt bs $JFROG_CLI_BUILD_NAME $GITHUB_RUN_NUMBER
+           jf bs $JFROG_CLI_BUILD_NAME $GITHUB_RUN_NUMBER
