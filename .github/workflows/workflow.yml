@@ -80,7 +80,7 @@ jobs:
         with:
           # The subject name must be the image name without tag
           subject-name: ${{ vars.JF_HOST }}/${{ env.DOCKER_REPO }}/ejs-demo
-          subject-digest: ${{ steps.docker-info.outputs.digest }} #format must be SHA256:<hexvalue>
+          subject-digest: ${{ steps.build.outputs.digest }} #format must be sha256:<hexvalue>
           push-to-registry: true
       - name: Publish build info & scan build
         id: publish-build  
