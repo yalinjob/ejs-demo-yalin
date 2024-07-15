@@ -1,3 +1,4 @@
+//Object.freeze(Object.prototype);
 var express = require('express');
 const bodyParser = require('body-parser');
 const lodash = require('lodash'); 
