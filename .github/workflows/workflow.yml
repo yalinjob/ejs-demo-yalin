@@ -52,10 +52,11 @@ jobs:
           password: ${{ steps.setup-cli.outputs.oidc-token }}
       # docker image build
       - name: Build and Push Docker image
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v6
         id: build
         with:
           push: true
+          provenance: true
           platforms: linux/amd64 #, linux/arm64
           tags: ${{ vars.JF_HOST }}/${{ env.DOCKER_REPO }}/${{ env.IMAGE_NAME }}
       # docker xray scanning
@@ -74,14 +75,14 @@ jobs:
         run: |
           echo "${{ vars.JF_HOST }}/${{ env.DOCKER_REPO }}/${{ env.IMAGE_NAME }}@${{ steps.build.outputs.digest }}" > metadata.json
           jf rt build-docker-create ${{ env.DOCKER_REPO }} --image-file metadata.json --build-name $JFROG_CLI_BUILD_NAME --build-number $GITHUB_RUN_NUMBER
-      - name: Attest
-        uses: actions/attest-build-provenance@v1
-        id: attest
-        with:
-          # The subject name must be the image name without tag
-          subject-name: ${{ vars.JF_HOST }}/${{ env.DOCKER_REPO }}/ejs-demo
-          subject-digest: ${{ steps.build.outputs.digest }} #format must be sha256:<hexvalue>
-          push-to-registry: true
+      #- name: Attest
+      #  uses: actions/attest-build-provenance@v1
+      #  id: attest
+      #  with:
+      #    # The subject name must be the image name without tag
+      #    subject-name: ${{ vars.JF_HOST }}/${{ env.DOCKER_REPO }}/ejs-demo
+      #    subject-digest: ${{ steps.build.outputs.digest }} #format must be sha256:<hexvalue>
+      #    push-to-registry: true
       - name: Publish build info & scan build
         id: publish-build  
         env:
