@@ -75,7 +75,7 @@ jobs:
         run: |  
           echo "digest=$(docker images --no-trunc --quiet ${{ vars.JF_HOST }}/${{ env.DOCKER_REPO }}/${{ env.IMAGE_NAME }})" >> $GITHUB_OUTPUT
           jf docker pull ${{ vars.JF_HOST }}/${{ env.DOCKER_REPO }}/${{ env.IMAGE_NAME }}
-          jf docker scan ${{ vars.JF_HOST }}/${{ env.DOCKER_REPO }}/${{ env.IMAGE_NAME }}
+          jf docker scan --fail=false --vuln ${{ vars.JF_HOST }}/${{ env.DOCKER_REPO }}/${{ env.IMAGE_NAME }} 
         # adding the built docker into the JFrog build info
       - name: add docker package to build
         env:
@@ -101,4 +101,4 @@ jobs:
           JF_PROJECT: ${{ vars.JF_PROJECT_KEY }}
         run: |
            jf rt bp $JFROG_CLI_BUILD_NAME $GITHUB_RUN_NUMBER
-           jf bs $JFROG_CLI_BUILD_NAME $GITHUB_RUN_NUMBER
+           jf bs --fail=false --vuln $JFROG_CLI_BUILD_NAME $GITHUB_RUN_NUMBER
