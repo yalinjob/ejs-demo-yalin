@@ -50,6 +50,8 @@ jobs:
         run: |
           jf rt bce ${{ env.JFROG_CLI_BUILD_NAME }} $GITHUB_RUN_NUMBER 
           jf rt bag ${{ env.JFROG_CLI_BUILD_NAME }} $GITHUB_RUN_NUMBER
+          jf npmc --repo-resolve dro-npm-remote
+          jf curation-audit
           jf npmc --repo-resolve dro-npm-unsecure-remote
           jf npm i --omit dev --build-name=${{ env.JFROG_CLI_BUILD_NAME }} --build-number=$GITHUB_RUN_NUMBER
           jf audit --npm --fail=false
