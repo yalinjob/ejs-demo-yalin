@@ -103,4 +103,4 @@ jobs:
           JF_PROJECT: ${{ vars.JF_PROJECT_KEY }}
         run: |
            jf rt bp $JFROG_CLI_BUILD_NAME $GITHUB_RUN_NUMBER
-           jf bs --fail=false --vuln $JFROG_CLI_BUILD_NAME $GITHUB_RUN_NUMBER
+           jf bs --fail=false --vuln --project=dro $JFROG_CLI_BUILD_NAME $GITHUB_RUN_NUMBER
