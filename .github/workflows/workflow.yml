@@ -71,6 +71,16 @@ jobs:
           provenance: true
           platforms: linux/amd64, linux/arm64
           tags: ${{ vars.JF_HOST }}/${{ env.DOCKER_REPO }}/${{ env.IMAGE_NAME }}
+      - name: Publish build information
+        id: publish-build
+        env:
+          JFROG_CLI_BUILD_NAME: 'gh-ejs-demo'
+          JF_URL: https://${{ vars.JF_HOST }}/
+          JF_PROJECT: ${{ vars.JF_PROJECT_KEY }}
+        run: |
+          echo "${{ vars.JF_HOST }}/${{ env.DOCKER_REPO }}/${{ env.IMAGE_NAME }}@${{ steps.build.outputs.digest }}" > metadata.json
+          jf rt build-docker-create ${{ env.DOCKER_REPO }} --image-file metadata.json --build-name $JFROG_CLI_BUILD_NAME --build-number $GITHUB_RUN_NUMBER
+          jf rt bp $JFROG_CLI_BUILD_NAME $GITHUB_RUN_NUMBER
       # docker xray scanning
       - name: docker Info
         id: docker-info
@@ -85,14 +95,6 @@ jobs:
       #  uses: github/codeql-action/upload-sarif@v3
       #  with:
       #    sarif_file: jfrog_sast.sarif
-      - name: add docker package to build
-        env:
-          JFROG_CLI_BUILD_NAME: 'gh-ejs-demo'
-          JF_URL: https://${{ vars.JF_HOST }}/
-          JF_PROJECT: ${{ vars.JF_PROJECT_KEY }}
-        run: |
-          echo "${{ vars.JF_HOST }}/${{ env.DOCKER_REPO }}/${{ env.IMAGE_NAME }}@${{ steps.build.outputs.digest }}" > metadata.json
-          jf rt build-docker-create ${{ env.DOCKER_REPO }} --image-file metadata.json --build-name $JFROG_CLI_BUILD_NAME --build-number $GITHUB_RUN_NUMBER
       #- name: Attest
       #  uses: actions/attest-build-provenance@v1
       #  id: attest
@@ -101,12 +103,11 @@ jobs:
       #    subject-name: ${{ vars.JF_HOST }}/${{ env.DOCKER_REPO }}/ejs-demo
       #    subject-digest: ${{ steps.build.outputs.digest }} #format must be sha256:<hexvalue>
       #    push-to-registry: true
-      - name: Publish build info & scan build
-        id: publish-build  
+      - name: Scan build
+        id: scan-build  
         env:
           JFROG_CLI_BUILD_NAME: 'gh-ejs-demo'
           JF_URL: https://${{ vars.JF_HOST }}/
           JF_PROJECT: ${{ vars.JF_PROJECT_KEY }}
         run: |
-           jf rt bp $JFROG_CLI_BUILD_NAME $GITHUB_RUN_NUMBER
            jf bs --fail=false $JFROG_CLI_BUILD_NAME $GITHUB_RUN_NUMBER --vuln
