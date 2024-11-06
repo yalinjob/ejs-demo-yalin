@@ -24,19 +24,17 @@ jobs:
         env:
           # [Mandatory]
           # JFrog platform URL (This functionality requires version 3.29.0 or above of Xray)
-          JF_URL: ${{ secrets.JF_URL }}
-
-          # [Mandatory if JF_USER and JF_PASSWORD are not provided]
-          # JFrog access token with 'read' permissions on Xray service
-          JF_USER: ${{ secrets.JF_USER }}
-          JF_PASSWORD: ${{ secrets.JF_PASSWORD }}
+          JF_URL: https://${{ vars.JF_HOST }}/
           JF_GIT_AGGREGATE_FIXES: "TRUE"
           # Displays all existing vulnerabilities, including the ones that were added by the pull request.
           JF_INCLUDE_ALL_VULNERABILITIES: "TRUE"          
           # [Mandatory]
           # The GitHub token automatically generated for the job
           JF_GIT_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          JF_DEPS_REPO: "fgr-npm-remote"
+          JF_DEPS_REPO: "dro-npm-unsecure-remote"
           # [Optional, default: "TRUE"]
           # Fails the Frogbot task if any security issue is found.
           #JF_FAIL: "FALSE" 
+        with:
+          oidc-provider-name: davidro-github-integration
+          oidc-audience: davidro-github
