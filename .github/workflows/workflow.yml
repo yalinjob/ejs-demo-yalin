@@ -12,6 +12,8 @@ jobs:
     permissions:
       id-token: write
       contents: read
+      # required for all workflows
+      security-events: write
       actions: read 
       attestations: write    
       packages: write
