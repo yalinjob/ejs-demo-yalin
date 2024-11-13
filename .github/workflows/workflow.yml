@@ -21,13 +21,7 @@ jobs:
       JF_PROJECT: ${{ vars.JF_PROJECT_KEY }}
     # Here we install all the tools : docker buildx, QEMU, JDK 11, JFrog CLI
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-      # Install prerequisites
-      -
-        # Add support for more platforms with QEMU (optional)
-        # https://github.com/docker/setup-qemu-action
-        name: Set up QEMU
+      - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
       -
         name: Set up Docker Buildx
