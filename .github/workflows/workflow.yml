@@ -108,5 +108,5 @@ jobs:
           digest: ${{ needs.github-ejs-demo.outputs.digest }}
           private-repository: true
         secrets:
-          registry-username: ${{ steps.setup-cli.outputs.oidc-user }}
-          registry-password: ${{ steps.setup-cli.outputs.oidc-token }}
+          registry-username: ${{ needs.github-ejs-demo.steps.setup-cli.outputs.oidc-user }}
+          registry-password: ${{ needs.github-ejs-demo.steps.setup-cli.outputs.oidc-token }}
