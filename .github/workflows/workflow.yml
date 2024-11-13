@@ -1,4 +1,4 @@
-name: "github-ejs-demo"
+name: "gh-ejs-demo"
 on: 
   schedule:
     - cron: "30 8 * * *"  
@@ -12,7 +12,7 @@ permissions:
   attestations: write    
   packages: write  
 jobs:
-  github-ejs-demo:
+  gh-ejs-demo:
     runs-on: ubuntu-latest
     env:
       DOCKER_REPO: 'dro-oci-dev-local'
@@ -92,12 +92,12 @@ jobs:
            jf build-scan --fail=false --vuln
   #SLSA Build Level 3 provenance
   provenance:
-        needs: [github-ejs-demo]
+        needs: [gh-ejs-demo]
         uses: slsa-framework/slsa-github-generator/.github/workflows/generator_container_slsa3.yml@v1.10.0
         with:
-          image:  ${{ needs.github-ejs-demo.outputs.image }}
-          digest: ${{ needs.github-ejs-demo.outputs.digest }}
+          image:  ${{ needs.gh-ejs-demo.outputs.image }}
+          digest: ${{ needs.gh-ejs-demo.outputs.digest }}
           private-repository: true
         secrets:
-          registry-username: ${{ needs.github-ejs-demo.steps.setup-cli.outputs.oidc-user }}
-          registry-password: ${{ needs.github-ejs-demo.steps.setup-cli.outputs.oidc-token }}
+          registry-username: ${{ needs.gh-ejs-demo.steps.setup-cli.outputs.oidc-user }}
+          registry-password: ${{ needs.gh-ejs-demo.steps.setup-cli.outputs.oidc-token }}
