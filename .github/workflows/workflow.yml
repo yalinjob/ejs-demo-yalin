@@ -87,14 +87,6 @@ jobs:
         uses: github/codeql-action/upload-sarif@v3
         with:
           sarif_file: jfrog_docker_scan.sarif
-      #- name: Attest
-      #  uses: actions/attest-build-provenance@v1
-      #  id: attest
-      #  with:
-      #    # The subject name must be the image name without tag
-      #    subject-name: ${{ vars.JF_HOST }}/${{ env.DOCKER_REPO }}/ejs-demo
-      #    subject-digest: ${{ steps.build.outputs.digest }} #format must be sha256:<hexvalue>
-      #    push-to-registry: true
       - name: Scan build
         id: scan-build  
         run: |
