@@ -99,14 +99,14 @@ jobs:
         id: scan-build  
         run: |
            jf build-scan --fail=false --vuln
-#SLSA Build Level 3 provenance
-provenance:
-      needs: [github-ejs-demo]
-      uses: slsa-framework/slsa-github-generator/.github/workflows/generator_container_slsa3.yml@v1.10.0
-      with:
-        image:  ${{ needs.github-ejs-demo.outputs.image }}
-        digest: ${{ needs.github-ejs-demo.outputs.digest }}
-        private-repository: true
-      secrets:
-        registry-username: ${{ steps.setup-cli.outputs.oidc-user }}
-        registry-password: ${{ steps.setup-cli.outputs.oidc-token }}
+  #SLSA Build Level 3 provenance
+  provenance:
+        needs: [github-ejs-demo]
+        uses: slsa-framework/slsa-github-generator/.github/workflows/generator_container_slsa3.yml@v1.10.0
+        with:
+          image:  ${{ needs.github-ejs-demo.outputs.image }}
+          digest: ${{ needs.github-ejs-demo.outputs.digest }}
+          private-repository: true
+        secrets:
+          registry-username: ${{ steps.setup-cli.outputs.oidc-user }}
+          registry-password: ${{ steps.setup-cli.outputs.oidc-token }}
