@@ -1,7 +1,16 @@
+name: "Demo NodeJS and Docker Workflow"
 on: 
   schedule:
     - cron: "30 8 * * *"  
   workflow_dispatch:
+permissions:
+  id-token: write
+  contents: read
+  # required for all workflows
+  security-events: write
+  actions: read 
+  attestations: write    
+  packages: write  
 jobs:
   github-ejs-demo:
     runs-on: ubuntu-latest
@@ -10,15 +19,6 @@ jobs:
       IMAGE_NAME: 'ejs-demo:${{ github.run_number }}'
       JF_URL: https://${{ vars.JF_HOST }}/
       JF_PROJECT: ${{ vars.JF_PROJECT_KEY }}
-
-    permissions:
-      id-token: write
-      contents: read
-      # required for all workflows
-      security-events: write
-      actions: read 
-      attestations: write    
-      packages: write
     # Here we install all the tools : docker buildx, QEMU, JDK 11, JFrog CLI
     steps:
       - name: Checkout
