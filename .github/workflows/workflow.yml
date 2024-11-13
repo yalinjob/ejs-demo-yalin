@@ -90,6 +90,7 @@ jobs:
         id: scan-build  
         run: |
            jf build-scan --fail=false --vuln
+           jf build-scan --fail=false 
   #SLSA Build Level 3 provenance
   #provenance:
   #      needs: [gh-ejs-demo]
