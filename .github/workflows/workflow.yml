@@ -22,8 +22,8 @@ jobs:
     outputs:
       image:  ${{ vars.JF_HOST }}/${{ env.DOCKER_REPO }}/${{ env.IMAGE_NAME }}
       digest: ${{ steps.build.outputs.digest }}      
-      registry-username: ${{ steps.setup-cli.outputs.oidc-user }}
-      registry-password: ${{ steps.setup-cli.outputs.oidc-token }}
+      jfusername: ${{ steps.setup-cli.outputs.oidc-user }}
+      jfpassword: ${{ steps.setup-cli.outputs.oidc-token }}
     # Here we install all the tools : docker buildx, QEMU, JDK 11, JFrog CLI
     steps:
       - name: Set up QEMU
@@ -103,5 +103,5 @@ jobs:
           digest: ${{ needs.gh-ejs-demo.outputs.digest }}
           private-repository: true
         secrets:
-          registry-username: ${{ needs.gh-ejs-demo.outputs.registry-username }}
-          registry-password: ${{ needs.gh-ejs-demo.outputs.registry-password }}
+          registry-username: ${{ needs.gh-ejs-demo.outputs.jfusername }}
+          registry-password: ${{ needs.gh-ejs-demo.outputs.jfpassword }}
