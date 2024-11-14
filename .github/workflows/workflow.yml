@@ -5,7 +5,7 @@ on:
   workflow_dispatch:
 permissions:
   id-token: write
-  contents: read
+  contents: write
   # required for all workflows
   security-events: write
   actions: read 
@@ -92,14 +92,14 @@ jobs:
         run: |
            jf build-scan --fail=false 
            jf build-scan --fail=false --vuln
-  #SLSA Build Level 3 provenance
-  #provenance:
-  #      needs: [gh-ejs-demo]
-  #      uses: slsa-framework/slsa-github-generator/.github/workflows/generator_container_slsa3.yml@v1.10.0
-  #      with:
-  #        image:  ${{ needs.gh-ejs-demo.outputs.image }}
-  #        digest: ${{ needs.gh-ejs-demo.outputs.digest }}
-  #        private-repository: true
-  #      secrets:
-  #        registry-username: ${{ needs.gh-ejs-demo.steps.setup-cli.outputs.oidc-user }}
-  #        registry-password: ${{ needs.gh-ejs-demo.steps.setup-cli.outputs.oidc-token }}
+    #SLSA Build Level 3 provenance
+    provenance:
+          needs: [gh-ejs-demo]
+          uses: slsa-framework/slsa-github-generator/.github/workflows/generator_container_slsa3.yml@v1.10.0
+          with:
+            image:  ${{ needs.gh-ejs-demo.outputs.image }}
+            digest: ${{ needs.gh-ejs-demo.outputs.digest }}
+            private-repository: true
+          secrets:
+            registry-username: ${{ needs.gh-ejs-demo.steps.setup-cli.outputs.oidc-user }}
+            registry-password: ${{ needs.gh-ejs-demo.steps.setup-cli.outputs.oidc-token }}
