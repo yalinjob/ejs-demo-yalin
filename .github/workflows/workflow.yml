@@ -22,6 +22,8 @@ jobs:
     outputs:
       image:  ${{ vars.JF_HOST }}/${{ env.DOCKER_REPO }}/${{ env.IMAGE_NAME }}
       digest: ${{ steps.build.outputs.digest }}      
+      registry-username: ${{ steps.setup-cli.outputs.oidc-user }}
+      registry-password: ${{ steps.setup-cli.outputs.oidc-token }}
     # Here we install all the tools : docker buildx, QEMU, JDK 11, JFrog CLI
     steps:
       - name: Set up QEMU
@@ -92,7 +94,7 @@ jobs:
         run: |
            jf build-scan --fail=false 
            jf build-scan --fail=false --vuln
-    #SLSA Build Level 3 provenance
+  #SLSA Build Level 3 provenance
   provenance:
         needs: [gh-ejs-demo]
         uses: slsa-framework/slsa-github-generator/.github/workflows/generator_container_slsa3.yml@v1.10.0
@@ -101,5 +103,5 @@ jobs:
           digest: ${{ needs.gh-ejs-demo.outputs.digest }}
           private-repository: true
         secrets:
-          registry-username: ${{ needs.gh-ejs-demo.steps.setup-cli.outputs.oidc-user }}
-          registry-password: ${{ needs.gh-ejs-demo.steps.setup-cli.outputs.oidc-token }}
+          registry-username: ${{ needs.gh-ejs-demo.outputs.registry-username }}
+          registry-password: ${{ needs.gh-ejs-demo.outputs.registry-password }}
