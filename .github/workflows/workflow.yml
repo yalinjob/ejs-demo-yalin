@@ -84,10 +84,10 @@ jobs:
           pwd
           ls -al
         # adding the built docker into the JFrog build info
-      - name: Upload output to generate autofix
-        uses: github/codeql-action/upload-sarif@v3
-        with:
-          sarif_file: jfrog_docker_scan.sarif
+      #- name: Upload output to generate autofix
+      #  uses: github/codeql-action/upload-sarif@v3
+      #  with:
+      #    sarif_file: jfrog_docker_scan.sarif
       - name: Scan build
         id: scan-build  
         run: |
