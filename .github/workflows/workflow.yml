@@ -102,6 +102,5 @@ jobs:
           image:  ${{ needs.gh-ejs-demo.outputs.image }}
           digest: ${{ needs.gh-ejs-demo.outputs.digest }}
           private-repository: true
-        secrets:
           registry-username: ${{ needs.gh-ejs-demo.outputs.jfusername }}
           registry-password: ${{ needs.gh-ejs-demo.outputs.jfpassword }}
