@@ -21,9 +21,7 @@ jobs:
       JF_PROJECT: ${{ vars.JF_PROJECT_KEY }}
     outputs:
       image:  ${{ vars.JF_HOST }}/${{ env.DOCKER_REPO }}/${{ env.IMAGE_NAME }}
-      digest: ${{ steps.build.outputs.digest }}      
-      jfusername: ${{ steps.setup-cli.outputs.oidc-user }}
-      jfpassword: ${{ steps.setup-cli.outputs.oidc-token }}
+      digest: ${{ steps.build.outputs.digest }}
     # Here we install all the tools : docker buildx, QEMU, JDK 11, JFrog CLI
     steps:
       - name: Set up QEMU
@@ -102,5 +100,16 @@ jobs:
           image:  ${{ needs.gh-ejs-demo.outputs.image }}
           digest: ${{ needs.gh-ejs-demo.outputs.digest }}
           private-repository: true
-          registry-username: ${{ needs.gh-ejs-demo.outputs.jfusername }}
-          registry-password: ${{ needs.gh-ejs-demo.outputs.jfpassword }}
+          registry-username: ${{ steps.setup-cli.outputs.oidc-user }}
+        secrets:
+          registry-password: ${{ steps.setup-cli.outputs.oidc-token }}
+        steps:
+          - name: Setup JFrog CLI
+            id: setup-cli
+            uses: jfrog/setup-jfrog-cli@v4
+            env:
+              JF_URL: https://${{ vars.JF_HOST }}/
+              JF_PROJECT: ${{ vars.JF_PROJECT_KEY }}
+            with:
+                oidc-provider-name: davidro-github-integration
+                oidc-audience: davidro-github  
