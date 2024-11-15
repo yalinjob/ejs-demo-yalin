@@ -99,8 +99,8 @@ jobs:
         with:
           image:  ${{ needs.gh-ejs-demo.outputs.image }}
           digest: ${{ needs.gh-ejs-demo.outputs.digest }}
-          private-repository: true
-          registry-username: ${{ secrets.PROVENANCE_USER }}
+          private-repository: true          
         secrets:
+          registry-username: ${{ secrets.PROVENANCE_LOGIN }}
           registry-password: ${{ secrets.PROVENANCE_PWD }}
         
