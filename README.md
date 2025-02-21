@@ -54,3 +54,15 @@ open a terminal and run
 `nc -lv 1337`
 
 Then use the link in the application to open the web shell.
+
+## Verifying the provenance attestation
+```
+COSIGN_EXPERIMENTAL=1 cosign verify-attestation \
+  --type slsaprovenance \
+  --certificate-oidc-issuer https://token.actions.githubusercontent.com \
+  --registry-username changeme \
+  --registry-password changeme \
+  --certificate-identity-regexp '^https://github.com/slsa-framework/slsa-github-generator/.github/workflows/generator_container_slsa3.yml@refs/tags/v[0-9]+.[0-9]+.[0-9]+$' \
+  --policy policy.cue \
+  changeme.jfrog.io/changeme-oci-dev-local/ejs-demo:243
+```
