@@ -50,6 +50,8 @@ jobs:
           jf npmc --repo-resolve dro-npm-remote
           jf curation-audit
           jf npmc --repo-resolve dro-npm-unsecure-remote
+          npm cache clean --force
+          rm package-lock.json
           jf npm i --omit dev 
           jf audit --npm --fail=false
       
