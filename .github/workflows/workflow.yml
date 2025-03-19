@@ -49,9 +49,9 @@ jobs:
           jf rt bce 
           jf npmc --repo-resolve dro-npm-remote
           jf ca
-          jf npmc --repo-resolve dro-npm-unsecure-remote
-          npm cache clean --force
+          jf npm cache clean --force
           rm package-lock.json
+          jf npmc --repo-resolve dro-npm-unsecure-remote
           jf npm i --omit dev 
           jf audit --npm --fail=false
       
@@ -97,7 +97,7 @@ jobs:
       - name: Create release-bundle
         id: create-bundle  
         run: |
-           jf rbs --spec=./simple-bundle-specs.json DroBundleEJS 1.${{ github.run_number }}.0           
+           jf rbc --spec=./simple-bundle-specs.json DroBundleEJS 1.${{ github.run_number }}.0           
   provenance:
         needs: [gh-ejs-demo]
         uses: slsa-framework/slsa-github-generator/.github/workflows/generator_container_slsa3.yml@v2.0.0
