@@ -97,7 +97,7 @@ jobs:
       - name: Create release-bundle
         id: create-bundle  
         run: |
-           jf rbc --spec=./simple-bundle-specs.json DroBundleEJS 1.${{ github.run_number }}.0           
+           jf rbc --spec=./simple-bundle-specs.json DroDemoBundle 1.${{ github.run_number }}.0           
   provenance:
         needs: [gh-ejs-demo]
         uses: slsa-framework/slsa-github-generator/.github/workflows/generator_container_slsa3.yml@v2.0.0
