@@ -98,6 +98,11 @@ jobs:
         id: create-bundle  
         run: |
            jf rbc --spec=./simple-bundle-specs.json DroBundleEJS 1.${{ github.run_number }}.0           
+      - name: Create test evidence
+        id: create-evd  
+        run: |
+           
+           jf evd create --project ${{ vars.JF_PROJECT_KEY }} --predicate=api_test_run.json --predicate-type=https://jfrog.com/evidence/test-results/v1 --package-name ejs-demo --package-version ${{ github.run_number }} --package-repo-name=dro-oci-dev-local --key=private.pem --key-alias=dro-rlm-demo --markdown test-results.md
   provenance:
         needs: [gh-ejs-demo]
         uses: slsa-framework/slsa-github-generator/.github/workflows/generator_container_slsa3.yml@v2.0.0
