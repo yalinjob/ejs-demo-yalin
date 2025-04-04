@@ -94,15 +94,23 @@ jobs:
       #  run: |
       #     jf build-scan --fail=false 
       #     jf build-scan --fail=false --vuln
-      - name: Create release-bundle
-        id: create-bundle  
-        run: |
-           jf rbc --spec=./simple-bundle-specs.json RlmEjsDemo 1.${{ github.run_number }}.0           
       - name: Create test evidence
         id: create-evd  
         run: |
-           
-           jf evd create --project ${{ vars.JF_PROJECT_KEY }} --predicate=api_test_run.json --predicate-type=https://jfrog.com/evidence/test-results/v1 --package-name ejs-demo --package-version ${{ github.run_number }} --package-repo-name=dro-oci-dev-local --key=private.pem --key-alias=dro-rlm-demo --markdown test-results.md
+           jf evd create --predicate=api_test_run.json --predicate-type=https://jfrog.com/evidence/test-results/v1 \
+           --package-name ejs-demo --package-version ${{ github.run_number }} --package-repo-name dro-oci-dev-local \
+           --key private.pem --key-alias dro-rlm-demo --markdown test-results.md --project=${{ vars.JF_PROJECT_KEY }}
+      - name: Sign build evidence
+        run: |
+          echo '{ "build-actor": "${{ github.actor }}", "date": "'$(date -u +"%Y-%m-%dT%H:%M:%SZ")'" }' > build-sign.json
+          jf evd create --build-name ${{ github.workflow }} --build-number ${{ github.run_number }} \
+            --predicate ./build-sign.json --predicate-type https://jfrog.com/evidence/build-signature/v1 \
+            --key private.pem  --key-alias dro-rlm-demo --project=${{ vars.JF_PROJECT_KEY }}
+          echo '🔎 Evidence attached: `build-signature` 🔏 ' >> $GITHUB_STEP_SUMMARY
+      - name: Create release-bundle
+        id: create-bundle  
+        run: |
+           jf rbc --spec=./simple-bundle-specs.json RlmEjsDemo 1.${{ github.run_number }}.0 --sync=true          
   provenance:
         needs: [gh-ejs-demo]
         uses: slsa-framework/slsa-github-generator/.github/workflows/generator_container_slsa3.yml@v2.0.0
