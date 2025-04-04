@@ -1,0 +1,77 @@
+{
+	"id": "22fb2206-2bea-406f-8d9a-96f944f08923",
+	"name": "JFrog Platform API",
+	"timestamp": "2025-04-04T12:28:32.558Z",
+	"collection_id": "23575848-645bce38-f7cc-40db-9082-abe580d800a0",
+	"folder_id": 0,
+	"environment_id": "23575848-0b66d5d0-009a-4eb3-b581-470c6ddfdb16",
+	"totalPass": 5,
+	"delay": 0,
+	"persist": true,
+	"status": "finished",
+	"startedAt": "2025-04-04T12:28:31.904Z",
+	"totalFail": 0,
+	"results": [
+		{
+			"id": "be28815c-8a72-4833-b0ae-8a97e8e21598",
+			"name": "[RT] Get System version acces token version",
+			"url": "https://solengeu.jfrog.io/artifactory/api/system/version",
+			"time": 335,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {
+				"Response status code is 200": true,
+				"Content type is application/vnd.org.jfrog.artifactory.system.Version+json": true,
+				"Response time is less than 500ms": true,
+				"Presence of required fields": true,
+				"Validate format and data types of fields": true
+			},
+			"testPassFailCounts": {
+				"Response status code is 200": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Content type is application/vnd.org.jfrog.artifactory.system.Version+json": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Response time is less than 500ms": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Presence of required fields": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Validate format and data types of fields": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				335
+			],
+			"allTests": [
+				{
+					"Response status code is 200": true,
+					"Content type is application/vnd.org.jfrog.artifactory.system.Version+json": true,
+					"Response time is less than 500ms": true,
+					"Presence of required fields": true,
+					"Validate format and data types of fields": true
+				}
+			]
+		}
+	],
+	"count": 1,
+	"totalTime": 335,
+	"collection": {
+		"requests": [
+			{
+				"id": "be28815c-8a72-4833-b0ae-8a97e8e21598",
+				"method": "GET"
+			}
+		]
+	}
+}
