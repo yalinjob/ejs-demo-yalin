@@ -97,7 +97,7 @@ jobs:
       - name: Create release-bundle
         id: create-bundle  
         run: |
-           jf rbc --spec=./simple-bundle-specs.json DroBundleEJS 1.${{ github.run_number }}.0           
+           jf rbc --spec=./simple-bundle-specs.json RlmEjsDemo 1.${{ github.run_number }}.0           
       - name: Create test evidence
         id: create-evd  
         run: |
