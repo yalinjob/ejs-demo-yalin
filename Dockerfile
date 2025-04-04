@@ -3,11 +3,11 @@ ARG JF_TOKEN
 
 # Create app directory
 WORKDIR /usr/src/app
-COPY package*.json ./
+COPY package.json ./
 RUN apt-get update && \
     apt-get install -y curl make ncat && \
     apt-get clean
-RUN curl -fL https://install-cli.jfrog.io | sh
+#RUN curl -fL https://install-cli.jfrog.io | sh
 
 # If you are building your code for production
 RUN npm i --omit dev
