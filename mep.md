@@ -3,6 +3,8 @@
 ## Deploy log
 - **Deploy mode:** Argo CD
 - **Status:** `OK`
+- **Namespace:** `demo`
+- **Cluster:** `soleng-runtime-demo`
 - **Service URL:** `https://my-service.org`
 
 

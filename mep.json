@@ -1,5 +1,8 @@
 {
     "name": "froghome",
     "version": "1.0.0",
-    "description": "demo rlm package"
+    "description": "demo rlm package",
+    "namespace":  "demo",
+    "cluster": "soleng-runtime-demo",
+    "time": "1744629374"
 }
