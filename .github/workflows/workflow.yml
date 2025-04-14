@@ -103,11 +103,10 @@ jobs:
       - name: Sign build evidence
         run: |
           echo '🔎 Evidence attached: `build-signature` 🔏 ' >> $GITHUB_STEP_SUMMARY
-          cat  $GITHUB_STEP_SUMMARY >> build-logs.md
           echo '{ "build-actor": "${{ github.actor }}", "date": "'$(date -u +"%Y-%m-%dT%H:%M:%SZ")'" }' > build-sign.json
           jf evd create --build-name ${{ github.workflow }} --build-number ${{ github.run_number }} \
             --predicate ./build-sign.json --predicate-type https://jfrog.com/evidence/build-signature/v1 \
-            --key private.pem  --key-alias dro-rlm-demo --project=${{ vars.JF_PROJECT_KEY }} --markdown build-logs.md
+            --key private.pem  --key-alias dro-rlm-demo --project=${{ vars.JF_PROJECT_KEY }} --markdown build-summary.md
           
       - name: Create release-bundle and add evidence
         id: create-bundle  

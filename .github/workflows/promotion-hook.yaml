@@ -21,6 +21,8 @@ jobs:
       with:
         oidc-provider-name: davidro-github-integration
         oidc-audience: davidro-github
+    - name: Checkout the repository      
+      uses: actions/checkout@v4           
     - name: process data received
       id: event-received
       shell: bash
