@@ -1,6 +1,8 @@
 on:
   repository_dispatch:
     types: promotion-process
+permissions:
+  id-token: write
 name: attach-evd
 jobs:
   deploy:
