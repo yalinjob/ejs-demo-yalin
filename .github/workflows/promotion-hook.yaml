@@ -1,0 +1,30 @@
+on:
+  repository_dispatch:
+    types: promotion-process
+name: attach-evd
+jobs:
+  deploy:
+    name: Add an evidence to the bundle
+    runs-on: ubuntu-latest
+    env:
+      JF_URL: https://${{ vars.JF_HOST }}/
+      JF_PROJECT: ${{ vars.JF_PROJECT_KEY }}
+    steps:
+    - name: Setup JFrog CLI
+      id: setup-cli
+      uses: jfrog/setup-jfrog-cli@v4
+      env:
+        JF_URL: https://${{ vars.JF_HOST }}/
+        JF_PROJECT: ${{ vars.JF_PROJECT_KEY }}
+      with:
+        oidc-provider-name: davidro-github-integration
+        oidc-audience: davidro-github
+    - name: process data received
+      id: event-received
+      shell: bash
+      run: |
+        echo BUNDLE NAME ${{ github.event.client_payload.name }}
+        echo BUNDLE VERSION ${{ github.event.client_payload.version }}
+        jf evd create --predicate ./mep.json --predicate-type=https://jfrog.com/evidence/signature/v1 \
+           --release-bundle ${{ github.event.client_payload.name }}  --release-bundle-version ${{ github.event.client_payload.version }} \
+           --key private.pem  --key-alias dro-rlm-demo --project=${{ vars.JF_PROJECT_KEY }} --markdown mep.md
