@@ -1,4 +1,10 @@
-# Mise en production 
+# Prod deployment summary
+
+## Deploy log
+- **Deploy mode:** Argo CD
+- **Status:** `OK`
+- **Service URL:** `https://my-service.org`
 
 
-## 🐸 Pendant la conf Devoxx Paris 2025 !
+## Approval Info
+- **Approval reason:**`🐸 Deployed during Devoxx Paris 2025 !`
