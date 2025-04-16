@@ -8,7 +8,7 @@
 
 ## Build Status
 
-- **Registry:** `solengeu.jfrog.io/dro-oci-dev-local/
+- **Registry:** `solengeu.jfrog.io/dro-oci-dev-local/`
 
 ## Steps Summary
 1. **Checkout Code**
