@@ -70,7 +70,7 @@ jobs:
           push: true
           provenance: true
           platforms: linux/amd64 #, linux/arm64
-          tags: solengeu.jfrog.io/${{ env.DOCKER_REPO }}/${{ env.IMAGE_NAME }}
+          tags: ${{ vars.JF_HOST }}/${{ env.DOCKER_REPO }}/${{ env.IMAGE_NAME }}
       - name: Publish build information
         id: publish-build
         run: |
