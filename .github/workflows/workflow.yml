@@ -93,6 +93,12 @@ jobs:
       - name: Scan build
         id: scan-build  
         run: |
+          # Collect environment variables for the build
+          jf rt bce
+          # Collect VCS details from git and add them to the build
+          jf rt bag
+          # Publish build info
+          jf rt bp ${{ vars.BUILD_NAME }} $GITHUB_RUN_NUMBER
           jf build-scan --fail=false 
           jf build-scan --fail=false --vuln
     
