@@ -17,7 +17,7 @@ jobs:
     env:
       DOCKER_REPO: 'ya-oci-dev-local'
       IMAGE_NAME: 'ejs-demo:${{ github.run_number }}'
-      JF_URL: ${{ vars.JF_HOST }}/
+      JF_URL: https://${{ vars.JF_HOST }}/
       JF_PROJECT: ${{ vars.JF_PROJECT_KEY }}
     outputs:
       image:  ${{ vars.JF_HOST }}/${{ env.DOCKER_REPO }}/${{ env.IMAGE_NAME }}
@@ -37,7 +37,7 @@ jobs:
         id: setup-cli
         uses: jfrog/setup-jfrog-cli@v4
         env:
-          JF_URL: ${{ vars.JF_HOST }}/
+          JF_URL: https://${{ vars.JF_HOST }}/
           JF_PROJECT: ${{ vars.JF_PROJECT_KEY }}
         with:
             oidc-provider-name: ya-github
