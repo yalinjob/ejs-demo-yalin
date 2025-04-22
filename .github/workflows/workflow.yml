@@ -1,4 +1,4 @@
-name: "gh-ejs-demo"
+name: "ejs-demo"
 on: 
   schedule:
     - cron: "30 8 * * *"  
@@ -15,9 +15,9 @@ jobs:
   gh-ejs-demo:
     runs-on: ubuntu-latest
     env:
-      DOCKER_REPO: 'dro-oci-dev-local'
+      DOCKER_REPO: 'ya-oci-dev-local'
       IMAGE_NAME: 'ejs-demo:${{ github.run_number }}'
-      JF_URL: https://${{ vars.JF_HOST }}/
+      JF_URL: ${{ vars.JF_HOST }}/
       JF_PROJECT: ${{ vars.JF_PROJECT_KEY }}
     outputs:
       image:  ${{ vars.JF_HOST }}/${{ env.DOCKER_REPO }}/${{ env.IMAGE_NAME }}
@@ -37,11 +37,11 @@ jobs:
         id: setup-cli
         uses: jfrog/setup-jfrog-cli@v4
         env:
-          JF_URL: https://${{ vars.JF_HOST }}/
+          JF_URL: ${{ vars.JF_HOST }}/
           JF_PROJECT: ${{ vars.JF_PROJECT_KEY }}
         with:
-            oidc-provider-name: davidro-github-integration
-            oidc-audience: davidro-github
+            oidc-provider-name: ya-github
+            oidc-audience: ya-audience
       - name: Checkout the repository    
         uses: actions/checkout@v4      
       - name: NPM Audit 
@@ -70,7 +70,7 @@ jobs:
           push: true
           provenance: true
           platforms: linux/amd64 #, linux/arm64
-          tags: ${{ vars.JF_HOST }}/${{ env.DOCKER_REPO }}/${{ env.IMAGE_NAME }}
+          tags: solengeu.jfrog.io/${{ env.DOCKER_REPO }}/${{ env.IMAGE_NAME }}
       - name: Publish build information
         id: publish-build
         run: |
@@ -95,35 +95,5 @@ jobs:
       #  run: |
       #     jf build-scan --fail=false 
       #     jf build-scan --fail=false --vuln
-      - name: Create test evidence
-        id: create-evd  
-        run: |
-           jf evd create --predicate=api_test_run.json --predicate-type=https://jfrog.com/evidence/test-results/v1 \
-           --package-name ejs-demo --package-version ${{ github.run_number }} --package-repo-name dro-oci-dev-local \
-           --key private.pem --key-alias dro-rlm-demo --markdown test-results.md --project=${{ vars.JF_PROJECT_KEY }}
-      - name: Sign build evidence
-        run: |
-          echo '🔎 Evidence attached: `build-signature` 🔏 ' >> $GITHUB_STEP_SUMMARY
-          echo '{ "build-actor": "${{ github.actor }}", "date": "'$(date -u +"%Y-%m-%dT%H:%M:%SZ")'" }' > build-sign.json
-          jf evd create --build-name ${{ github.workflow }} --build-number ${{ github.run_number }} \
-            --predicate ./build-sign.json --predicate-type https://jfrog.com/evidence/build-signature/v1 \
-            --key private.pem  --key-alias dro-rlm-demo --project=${{ vars.JF_PROJECT_KEY }} --markdown build-summary.md
-          
-      - name: Create release-bundle and add evidence
-        id: create-bundle  
-        run: |
-           jf rbc --spec=./simple-bundle-specs.json RlmEjsDemo 1.${{ github.run_number }}.0 --sync=true --signing-key jfrog-rb-rsa
-           jf evd create --predicate ./feature.json --predicate-type=https://jfrog.com/evidence/test-results/v1 \
-           --release-bundle RlmEjsDemo  --release-bundle-version 1.${{ github.run_number }}.0 \
-           --key private.pem  --key-alias dro-rlm-demo --project=${{ vars.JF_PROJECT_KEY }} --markdown feature-flags.md
-  provenance:
-        needs: [gh-ejs-demo]
-        uses: slsa-framework/slsa-github-generator/.github/workflows/generator_container_slsa3.yml@v2.0.0
-        with:
-          image:  ${{ needs.gh-ejs-demo.outputs.image }}
-          digest: ${{ needs.gh-ejs-demo.outputs.digest }}
-          private-repository: true          
-        secrets:
-          registry-username: ${{ secrets.PROVENANCE_LOGIN }}
-          registry-password: ${{ secrets.PROVENANCE_PWD }}
+    
         
