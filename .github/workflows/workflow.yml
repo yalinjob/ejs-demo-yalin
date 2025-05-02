@@ -94,13 +94,13 @@ jobs:
         id: scan-build  
         run: |
           # Collect environment variables for the build
-          jf rt bce ejs-demo ${{ github.run_number }}
+          jf rt bce ejs-demo ${{ github.run_number }} --project=yademo
           # Collect VCS details from git and add them to the build
-          jf rt bag ejs-demo ${{ github.run_number }}
+          jf rt bag ejs-demo ${{ github.run_number }} --project=yademo
           # Publish build info
           # jf rt bp ${{ vars.BUILD_NAME }} $GITHUB_RUN_NUMBER
           #jf rt bp ${{ vars.BUILD_NAME }} ${{ github.run_number }}
-          jf rt bp ejs-demo ${{ github.run_number }}
+          jf rt bp ejs-demo ${{ github.run_number }} --project=yademo
 
 
           jf build-scan --fail=false 
