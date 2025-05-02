@@ -101,7 +101,7 @@ jobs:
           # jf rt bp ${{ vars.BUILD_NAME }} $GITHUB_RUN_NUMBER
           #jf rt bp ${{ vars.BUILD_NAME }} ${{ github.run_number }}
           jf rt bp ejs-demo ${{ github.run_number }} --project=yademo
-
+          jf rt curl /api/build/ejs-demo/${{ github.run_number }} || echo "Build not published!"
 
           jf build-scan --fail=false 
           jf build-scan --fail=false --vuln
