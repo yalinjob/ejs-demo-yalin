@@ -123,7 +123,10 @@ jobs:
         
       - name: Create release bundle
         run: |
-          echo '{ "files": [ {"build": "ejs-demo/${{ github.run_number }}" } ] }' > bundle-spec.json
+          - name: Generate bundle-spec.json
+
+          echo '{ "files": [ {"build": "ejs-demo '${{ github.run_number }}' --project=yademo" } ] }' > bundle-spec.json
+
 
           #echo '{ "files": [ {"build": "'"${{ github.workflow }}/${{ github.run_number }}"'" } ] }' > bundle-spec.json
           jf release-bundle-create ${{ github.actor }}-evidence-training ${{ github.run_number }} --signing-key ${{ secrets.RB_KEY }} --project ${{ vars.JF_PROJECT_KEY }} --spec bundle-spec.json --sync=true
