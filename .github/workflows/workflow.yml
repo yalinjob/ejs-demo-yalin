@@ -1,16 +1,18 @@
 name: "ejs-demo"
+
 on: 
   schedule:
     - cron: "30 8 * * *"  
   workflow_dispatch:
+
 permissions:
   id-token: write
   contents: write
-  # required for all workflows
   security-events: write
   actions: read 
   attestations: write    
   packages: write  
+
 jobs:
   gh-ejs-demo:
     runs-on: ubuntu-latest
@@ -22,112 +24,111 @@ jobs:
     outputs:
       image:  ${{ vars.JF_HOST }}/${{ env.DOCKER_REPO }}/${{ env.IMAGE_NAME }}
       digest: ${{ steps.build.outputs.digest }}
-    # Here we install all the tools : docker buildx, QEMU, JDK 11, JFrog CLI
+
     steps:
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
-      -
-        name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3      
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
       - name: Install Node
         uses: actions/setup-node@v3
         with:
-            node-version: 18 
+          node-version: 18 
+
       - name: Setup JFrog CLI
         id: setup-cli
         uses: jfrog/setup-jfrog-cli@v4
         env:
-          JF_URL: https://${{ vars.JF_HOST }}/
-          JF_PROJECT: ${{ vars.JF_PROJECT_KEY }}
+          JF_URL: ${{ env.JF_URL }}
+          JF_PROJECT: ${{ env.JF_PROJECT }}
         with:
-            oidc-provider-name: ya-github
-            oidc-audience: ya-audience
+          oidc-provider-name: ya-github
+          oidc-audience: ya-audience
+
       - name: Checkout the repository    
-        uses: actions/checkout@v4      
+        uses: actions/checkout@v4
+
       - name: NPM Audit 
         run: |
-          jf rt bce 
-          jf rt bag
+          jf rt bce ejs-demo ${{ github.run_number }} --project=${{ env.JF_PROJECT }}
+          jf rt bag ejs-demo ${{ github.run_number }} --project=${{ env.JF_PROJECT }}
           jf npmc --repo-resolve dro-npm-remote
           jf ca
           jf npm cache clean --force
-          rm package-lock.json
+          rm package-lock.json || true
           jf npmc --repo-resolve dro-npm-unsecure-remote
           jf npm i --omit dev 
-          jf audit --npm --fail=false
-      
+          jf audit --npm --fail=false --project=${{ env.JF_PROJECT }}
+
       - name: Authenticate Docker
         uses: docker/login-action@v3
         with:
           registry: ${{ vars.JF_HOST }}
           username: ${{ steps.setup-cli.outputs.oidc-user }}
           password: ${{ steps.setup-cli.outputs.oidc-token }}
-      # docker image build
+
       - name: Build and Push Docker image
         uses: docker/build-push-action@v6
         id: build
         with:
           push: true
           provenance: true
-          platforms: linux/amd64 #, linux/arm64
+          platforms: linux/amd64
           tags: ${{ vars.JF_HOST }}/${{ env.DOCKER_REPO }}/${{ env.IMAGE_NAME }}
+
       - name: Publish build information
         id: publish-build
         run: |
           echo "${{ vars.JF_HOST }}/${{ env.DOCKER_REPO }}/${{ env.IMAGE_NAME }}@${{ steps.build.outputs.digest }}" > metadata.json
-          jf rt build-docker-create ${{ env.DOCKER_REPO }} --image-file metadata.json
-          jf rt bp
-      # docker xray scanning
-      - name: docker Info
+          jf rt build-docker-create ${{ env.DOCKER_REPO }} --image-file metadata.json --project=${{ env.JF_PROJECT }}
+          jf rt bp ejs-demo ${{ github.run_number }} --project=${{ env.JF_PROJECT }}
+
+      - name: Docker Xray scan
         id: docker-info
-        run: |  
-          echo "digest=$(docker images --no-trunc --quiet ${{ vars.JF_HOST }}/${{ env.DOCKER_REPO }}/${{ env.IMAGE_NAME }})" >> $GITHUB_OUTPUT
+        run: |
           jf docker pull ${{ vars.JF_HOST }}/${{ env.DOCKER_REPO }}/${{ env.IMAGE_NAME }}
-          jf docker scan --fail=false  --threads=5 ${{ vars.JF_HOST }}/${{ env.DOCKER_REPO }}/${{ env.IMAGE_NAME }} --severity='HIGH,CRITICAL' --vuln --format=sarif > jfrog_docker_scan.sarif
-          sed -i s/"\"uri\": \"\""/"\"uri\": \"${{ vars.JF_URL }}\/${{ env.DOCKER_REPO }}\/${{ env.IMAGE_NAME }}:${{ github.run_number }}\""/g jfrog_docker_scan.sarif
-        # adding the built docker into the JFrog build info
-      - name: Upload output to generate autofix
+          jf docker scan --fail=false --threads=5 ${{ vars.JF_HOST }}/${{ env.DOCKER_REPO }}/${{ env.IMAGE_NAME }} \
+            --severity='HIGH,CRITICAL' --vuln --format=sarif > jfrog_docker_scan.sarif
+          sed -i s/"\"uri\": \"\""/"\"uri\": \"${{ env.JF_URL }}\/${{ env.DOCKER_REPO }}\/${{ env.IMAGE_NAME }}:${{ github.run_number }}\""/g jfrog_docker_scan.sarif
+
+      - name: Upload SARIF for GitHub Security Dashboard
         uses: github/codeql-action/upload-sarif@v3
         with:
           sarif_file: jfrog_docker_scan.sarif
-      - name: Scan build
-        id: scan-build  
-        run: |
-          # Collect environment variables for the build
-          jf rt bce ejs-demo ${{ github.run_number }} --project=yademo
-          # Collect VCS details from git and add them to the build
-          jf rt bag ejs-demo ${{ github.run_number }} --project=yademo
-          # Publish build info
-          # jf rt bp ${{ vars.BUILD_NAME }} $GITHUB_RUN_NUMBER
-          #jf rt bp ${{ vars.BUILD_NAME }} ${{ github.run_number }}
-          jf rt bp ejs-demo ${{ github.run_number }} --project=yademo
-          jf rt curl /api/build/ejs-demo/${{ github.run_number }} || echo "Build not published!"
 
-          jf build-scan --fail=false 
-          jf build-scan --fail=false --vuln
-          
+      - name: Scan build info with Xray
+        run: |
+          jf build-scan --fail=false --vuln --project=${{ env.JF_PROJECT }}
+
       - name: Create test evidence
         id: create-evd  
         run: |
-           jf evd create --predicate=api_test_run.json --predicate-type=https://jfrog.com/evidence/test-results/v1 \
-           --package-name ejs-demo --package-version ${{ github.run_number }} --package-repo-name ya-oci-dev-local \
-           --key "${{ secrets.PRIVATE_KEY }}" --key-alias ${{ secrets.KEY_ALIAS }}  --markdown test-results.md --project=${{ vars.JF_PROJECT_KEY }}
-           
+          jf evd create --predicate=api_test_run.json \
+            --predicate-type=https://jfrog.com/evidence/test-results/v1 \
+            --package-name ejs-demo --package-version ${{ github.run_number }} \
+            --package-repo-name ${{ env.DOCKER_REPO }} \
+            --key "${{ secrets.PRIVATE_KEY }}" --key-alias ${{ secrets.KEY_ALIAS }} \
+            --markdown test-results.md --project=${{ env.JF_PROJECT }}
+
       - name: Sign build evidence
         run: |
           echo '🔎 Evidence attached: `build-signature` 🔏 ' >> $GITHUB_STEP_SUMMARY
           echo '{ "build-actor": "${{ github.actor }}", "date": "'$(date -u +"%Y-%m-%dT%H:%M:%SZ")'" }' > build-sign.json
           jf evd create --build-name ${{ github.workflow }} --build-number ${{ github.run_number }} \
-            --predicate ./build-sign.json --predicate-type https://jfrog.com/evidence/build-signature/v1 \
-            --key "${{ secrets.PRIVATE_KEY }}" --key-alias ${{ secrets.KEY_ALIAS }} --project=${{ vars.JF_PROJECT_KEY }} --markdown build-summary.md
-        
+            --predicate ./build-sign.json \
+            --predicate-type https://jfrog.com/evidence/build-signature/v1 \
+            --key "${{ secrets.PRIVATE_KEY }}" --key-alias ${{ secrets.KEY_ALIAS }} \
+            --project=${{ env.JF_PROJECT }} --markdown build-summary.md
+
       - name: Create release bundle
         run: |
+          echo '{ "files": [ { "build": "ejs-demo '${{ github.run_number }}'" } ] }' > bundle-spec.json
+          jf release-bundle-create ${{ github.actor }}-evidence-training ${{ github.run_number }} \
+            --signing-key ${{ secrets.RB_KEY }} \
+            --project=${{ env.JF_PROJECT }} \
+            --spec bundle-spec.json --sync=true
 
-          echo '{ "files": [ {"build": "ejs-demo '${{ github.run_number }}' --project=yademo" } ] }' > bundle-spec.json
-
-
-          #echo '{ "files": [ {"build": "'"${{ github.workflow }}/${{ github.run_number }}"'" } ] }' > bundle-spec.json
-          jf release-bundle-create ${{ github.actor }}-evidence-training ${{ github.run_number }} --signing-key ${{ secrets.RB_KEY }} --project ${{ vars.JF_PROJECT_KEY }} --spec bundle-spec.json --sync=true
-          VER_LINK= https://${{ vars.JF_HOST }}/ui/artifactory/lifecycle/?bundleName='${{ github.actor }}-evidence-training'&bundleToFlash='${{ github.actor }}-evidence-training'&releaseBundleVersion='${{ github.run_number }}'&repositoryKey=release-bundles-v2&activeKanbanTab=promotion'
+          VER_LINK=https://${{ vars.JF_HOST }}/ui/artifactory/lifecycle/?bundleName='${{ github.actor }}-evidence-training'&bundleToFlash='${{ github.actor }}-evidence-training'&releaseBundleVersion='${{ github.run_number }}'&repositoryKey=release-bundles-v2&activeKanbanTab=promotion
           echo '📦 Release bundle ['${{ github.actor }}-evidence-training:${{ github.run_number }}']('${VER_LINK}') created' >> $GITHUB_STEP_SUMMARY
