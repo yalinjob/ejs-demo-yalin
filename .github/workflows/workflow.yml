@@ -123,7 +123,6 @@ jobs:
         
       - name: Create release bundle
         run: |
-          - name: Generate bundle-spec.json
 
           echo '{ "files": [ {"build": "ejs-demo '${{ github.run_number }}' --project=yademo" } ] }' > bundle-spec.json
 
