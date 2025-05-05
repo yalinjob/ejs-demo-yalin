@@ -85,14 +85,14 @@ jobs:
           jf rt build-docker-create ${{ env.DOCKER_REPO }} --image-file metadata.json --project=${{ env.JF_PROJECT }}
           jf rt bp ejs-demo ${{ github.run_number }} --project=${{ env.JF_PROJECT }}
 
-      - name: Docker Xray scan
+      - name: docker Info
         id: docker-info
-        run: |
+        run: |  
+          echo "digest=$(docker images --no-trunc --quiet ${{ vars.JF_HOST }}/${{ env.DOCKER_REPO }}/${{ env.IMAGE_NAME }})" >> $GITHUB_OUTPUT
           jf docker pull ${{ vars.JF_HOST }}/${{ env.DOCKER_REPO }}/${{ env.IMAGE_NAME }}
-          jf docker scan --fail=false --threads=5 ${{ vars.JF_HOST }}/${{ env.DOCKER_REPO }}/${{ env.IMAGE_NAME }} \
-            --severity='HIGH,CRITICAL' --vuln --format=sarif > jfrog_docker_scan.sarif
-          sed -i s/"\"uri\": \"\""/"\"uri\": \"${{ env.JF_URL }}\/${{ env.DOCKER_REPO }}\/${{ env.IMAGE_NAME }}:${{ github.run_number }}\""/g jfrog_docker_scan.sarif
-
+          jf docker scan --fail=false  --threads=5 ${{ vars.JF_HOST }}/${{ env.DOCKER_REPO }}/${{ env.IMAGE_NAME }} --severity='HIGH,CRITICAL' --vuln --format=sarif > jfrog_docker_scan.sarif
+          sed -i s/"\"uri\": \"\""/"\"uri\": \"${{ vars.JF_URL }}\/${{ env.DOCKER_REPO }}\/${{ env.IMAGE_NAME }}:${{ github.run_number }}\""/g jfrog_docker_scan.sarif
+          
       - name: Upload SARIF for GitHub Security Dashboard
         uses: github/codeql-action/upload-sarif@v3
         with:
