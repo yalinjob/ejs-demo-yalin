@@ -97,7 +97,15 @@ jobs:
         uses: github/codeql-action/upload-sarif@v3
         with:
           sarif_file: jfrog_docker_scan.sarif
+      - name: Collecting Information from Git
+        run: jf rt build-add-git
 
+      - name: Collecting Environment Variables
+        run: jf rt build-collect-env
+
+      - name: Publish build info
+        run: jfrog rt build-publish
+        
       - name: Scan build info with Xray
         run: |
           jf build-scan --fail=false --vuln --project=${{ env.JF_PROJECT }}
