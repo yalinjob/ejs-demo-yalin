@@ -96,7 +96,7 @@ jobs:
       - name: Upload SARIF for GitHub Security Dashboard
         uses: github/codeql-action/upload-sarif@v3
         with:
-          sarif_file: jfrog_docker_scan.sari
+          sarif_file: jfrog_docker_scan.sarif
 
           
       - name: Collecting Information from Git
