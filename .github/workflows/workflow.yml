@@ -133,13 +133,4 @@ jobs:
             --key "${{ secrets.PRIVATE_KEY }}" --key-alias ${{ secrets.KEY_ALIAS }} \
             --project=${{ env.JF_PROJECT }} --markdown build-summary.md
 
-    #  - name: Create release bundle
-    #    run: |
-    #      echo '{ "files": [ { "build": "ejs-demo '${{ github.run_number }}'" } ] }' > bundle-spec.json
-    #      jf release-bundle-create ${{ github.actor }}-evidence-training ${{ github.run_number }} \
-    #        --signing-key ${{ secrets.RB_KEY }} \
-    #        --project=${{ env.JF_PROJECT }} \
-    #        --spec bundle-spec.json --sync=true
 
-    #      VER_LINK=https://${{ vars.JF_HOST }}/ui/artifactory/lifecycle/?bundleName='${{ github.actor }}-evidence-training'&bundleToFlash='${{ github.actor }}-evidence-training'&releaseBundleVersion='${{ github.run_number }}'&repositoryKey=release-bundles-v2&activeKanbanTab=promotion
-    #       echo '📦 Release bundle ['${{ github.actor }}-evidence-training:${{ github.run_number }}']('${VER_LINK}') created' >> $GITHUB_STEP_SUMMARY
