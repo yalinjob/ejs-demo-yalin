@@ -5,7 +5,7 @@ ARG JF_TOKEN
 WORKDIR /usr/src/app
 COPY package.json ./
 
-# Fix repository issues and install necessary packages
+# Fix repository issues by switching to Debian archive for buster
 RUN sed -i 's/http:\/\/deb.debian.org\/debian/http:\/\/archive.debian.org\/debian/g' /etc/apt/sources.list && \
     apt-get update && \
     apt-get install -y curl make ncat && \
