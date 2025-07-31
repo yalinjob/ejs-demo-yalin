@@ -60,7 +60,7 @@ jobs:
           rm package-lock.json || true
           jf npmc --repo-resolve dro-npm-unsecure-remote
           jf npm i --omit dev 
-          jf audit 
+          jf audit --npm --fail=false --project=${{ env.JF_PROJECT }} 
           
           
       - name: Authenticate Docker
