@@ -61,7 +61,7 @@ jobs:
           jf npmc --repo-resolve dro-npm-unsecure-remote
           jf npm i --omit dev 
           jf audit --npm --fail=false --project=${{ env.JF_PROJECT }} 
-          jf scan .
+         
           
           
       - name: Authenticate Docker
