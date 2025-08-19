@@ -54,13 +54,14 @@ jobs:
         run: |
           jf rt bce ejs-demo ${{ github.run_number }} --project=${{ env.JF_PROJECT }}
           jf rt bag ejs-demo ${{ github.run_number }} --project=${{ env.JF_PROJECT }}
+          jf audit
           jf npmc --repo-resolve dro-npm-remote
           jf ca
           jf npm cache clean --force
           rm package-lock.json || true
           jf npmc --repo-resolve dro-npm-unsecure-remote
           jf npm i --omit dev 
-          jf audit --npm --fail=false --project=${{ env.JF_PROJECT }} 
+          #jf audit --npm --fail=false --project=${{ env.JF_PROJECT }} 
          
           
           
