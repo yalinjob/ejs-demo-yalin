@@ -14,7 +14,7 @@ permissions:
   packages: write  
 
 jobs:
-  gh-ejs-demo:
+  ya-ejs-demo:
     runs-on: ubuntu-latest
     env:
       DOCKER_REPO: 'ya-oci-dev-local'
