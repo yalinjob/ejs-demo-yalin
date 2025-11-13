@@ -79,7 +79,7 @@ jobs:
           # jf build-scan --fail=false --vuln --project=${{ env.JF_PROJECT }}
            jf build-scan --fail=false 
            jf build-scan --fail=true --vuln
-           --watches="ejs-demo-yalin"
+              --watches="ejs-demo-yalin"
           
       - name: Authenticate Docker
         uses: docker/login-action@v3
