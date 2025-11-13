@@ -73,7 +73,7 @@ jobs:
 
 
       - name: Publish build info
-        run: jfrog rt build-publish --project=${{ env.JF_PROJECT }}    
+        run: jf rt bp ejs-demo ${{ github.run_number }} --project=${{ env.JF_PROJECT }}  
 
       - name: Scan build info with Xray (fail on violations)
         run: jf build-scan --fail=true --vuln=true --project=${{ env.JF_PROJECT }}
