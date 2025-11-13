@@ -25,6 +25,7 @@ jobs:
       image:  ${{ vars.JF_HOST }}/${{ env.DOCKER_REPO }}/${{ env.IMAGE_NAME }}
       digest: ${{ steps.build.outputs.digest }}
 
+
     steps:
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
