@@ -76,7 +76,7 @@ jobs:
         run: jfrog rt build-publish    
 
       - name: Scan build info with Xray (fail on violations)
-        run: jf build-scan --fail=true --vuln --project=${{ env.JF_PROJECT }}
+        run: jf build-scan --fail=true --vuln=true --project=${{ env.JF_PROJECT }}
 
           
       - name: Authenticate Docker
