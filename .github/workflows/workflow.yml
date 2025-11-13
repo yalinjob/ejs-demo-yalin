@@ -64,17 +64,17 @@ jobs:
           jf npm i --omit dev 
           #jf audit --npm --fail=false --project=${{ env.JF_PROJECT }} 
          
-          - name: Collect git info into build-info
-            run: jf rt bce ejs-demo ${{ github.run_number }} --project="$JF_PROJECT"
+      - name: Collect git info into build-info
+        run: jf rt bce ejs-demo ${{ github.run_number }} --project="$JF_PROJECT"
 
-          - name: Collect env vars
-            run: jf rt bag ejs-demo ${{ github.run_number }} --project="$JF_PROJECT"
+      - name: Collect env vars
+        run: jf rt bag ejs-demo ${{ github.run_number }} --project="$JF_PROJECT"
 
-          - name: Publish build info
-            run: jf rt bp ejs-demo ${{ github.run_number }} --project="$JF_PROJECT"
+      - name: Publish build info
+        run: jf rt bp ejs-demo ${{ github.run_number }} --project="$JF_PROJECT"
 
-          - name: Scan build info with Xray (fail on violations)
-            run: jf build-scan ejs-demo ${{ github.run_number }} --project="$JF_PROJECT" --vuln --fail=true
+      - name: Scan build info with Xray (fail on violations)
+        run: jf build-scan ejs-demo ${{ github.run_number }} --project="$JF_PROJECT" --vuln --fail=true
 
           
       - name: Authenticate Docker
