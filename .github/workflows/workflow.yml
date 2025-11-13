@@ -75,7 +75,7 @@ jobs:
         run: jfrog rt build-publish    
 
       - name: Scan build info with Xray (fail on violations)
-        run: jf build-scan --fail=true --vuln --watches "ejs-demo-yalin"
+        run: jf build-scan --fail=true --vuln --project=yademo
 
           
       - name: Authenticate Docker
