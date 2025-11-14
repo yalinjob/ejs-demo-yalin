@@ -1,5 +1,4 @@
 name: "ejs-demo"
-
 on: 
   schedule:
     - cron: "30 8 * * *"  
