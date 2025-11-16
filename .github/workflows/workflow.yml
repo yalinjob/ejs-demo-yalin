@@ -67,7 +67,7 @@ jobs:
           rm package-lock.json
           jf npmc --repo-resolve ejs-ya-remote-demo
           jf npm i --omit dev 
-          jf audit --npm --fail=false
+          #jf audit --npm --fail=false
          
       - name: Collect git info into build-info
         run: jf rt bce ejs-demo ${{ github.run_number }} --project=${{ env.JF_PROJECT }}
