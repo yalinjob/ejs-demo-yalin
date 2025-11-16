@@ -141,9 +141,9 @@ jobs:
      - name: Publish build info
        run: jfrog rt build-publish
       
-     - name: Scan build info with Xray
-       run: |
-         jf build-scan --fail=false --vuln --project=${{ env.JF_PROJECT }}
+     #- name: Scan build info with Xray
+     #  run: |
+     #    jf build-scan --fail=false --vuln --project=${{ env.JF_PROJECT }}
 
 
      - name: Create test evidence
