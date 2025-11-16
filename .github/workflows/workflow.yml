@@ -82,7 +82,7 @@ jobs:
          jf npm i --omit dev
          #jf audit --npm --fail=false --project=${{ env.JF_PROJECT }}
          jf rt bp ejs-demo ${{ github.run_number }} --project=yalinejs
-         jf build-scan --fail=false --vuln --project=yalinejs
+         jf build-scan --fail=true --project=yalinejs
        
         
         
