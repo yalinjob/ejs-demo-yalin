@@ -47,6 +47,10 @@ jobs:
        with:
          node-version: 18
 
+     - name: Normalize JF env
+       run: |
+        echo "JF_PROJECT=$(printf %s '${{ env.JF_PROJECT }}' | tr -d '\r\n' | xargs)" >> $GITHUB_ENV
+        echo "JF_URL=$(printf %s '${{ env.JF_URL }}'       | tr -d '\r\n' | xargs)" >> $GITHUB_ENV
 
 
      - name: Setup JFrog CLI
