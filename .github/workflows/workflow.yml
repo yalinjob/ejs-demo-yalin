@@ -114,7 +114,7 @@ jobs:
          echo "${{ vars.JF_HOST }}/${{ env.DOCKER_REPO }}/${{ env.IMAGE_NAME }}@${{ steps.build.outputs.digest }}" > metadata.json
          jf rt build-docker-create ${{ env.DOCKER_REPO }} --image-file metadata.json --project=${{ env.JF_PROJECT }}
          jf rt bp ejs-demo ${{ github.run_number }} --project=${{ env.JF_PROJECT }}
-         jf build-scan --fail=false --vuln --project=yalinejs
+         jf build-scan ejs-demo ${{ github.run_number }} --project=yalinejs --fail=true
 
      - name: docker Info
        id: docker-info
@@ -146,7 +146,7 @@ jobs:
       
      - name: Scan build info with Xray
        run: |
-        jf build-scan --fail=false --vuln --project=yalinejs
+        jf build-scan ejs-demo ${{ github.run_number }} --project=yalinejs --fail=true
 
 
      - name: Create test evidence
