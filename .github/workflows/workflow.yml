@@ -130,10 +130,10 @@ jobs:
         
      - name: Collecting Information from Git
        #run: jf rt build-add-git
-       run: jf rt bce ejs-demo ${{ github.run_number }} --project=${{ env.JF_PROJECT }
+       run: jf rt bce ejs-demo ${{ github.run_number }} --project=yalinejs
       
      - name: Collecting Environment Variables
-       run: jf rt bag ejs-demo ${{ github.run_number }} --project=${{ env.JF_PROJECT }
+       run: jf rt bag ejs-demo ${{ github.run_number }} --project=yalinejs
 
 
 
@@ -142,7 +142,7 @@ jobs:
       
      - name: Scan build info with Xray
        run: |
-        jf build-scan --fail=false --vuln --project=${{ env.JF_PROJECT }}
+        jf build-scan --fail=false --vuln --project=yalinejs
 
 
      - name: Create test evidence
