@@ -75,12 +75,12 @@ jobs:
       - name: Collect env vars
         run: jf rt bag 
 
-      - name: Publish build info
-        run: jf rt bp 
+      #- name: Publish build info
+       # run: jf rt bp 
 
-      - name: Scan build info with Xray (fail on violations)
+     # - name: Scan build info with Xray (fail on violations)
         #run: jf build-scan ejs-demo ${{ github.run_number }} --project=${{ env.JF_PROJECT }} --vuln --fail=true
-        run: jf build-scan
+       # run: jf build-scan
           
       - name: Authenticate Docker
         uses: docker/login-action@v3
@@ -104,6 +104,7 @@ jobs:
           echo "${{ vars.JF_HOST }}/${{ env.DOCKER_REPO }}/${{ env.IMAGE_NAME }}@${{ steps.build.outputs.digest }}" > metadata.json
           jf rt build-docker-create ${{ env.DOCKER_REPO }} --image-file metadata.json --project=${{ env.JF_PROJECT }}
           jf rt bp ejs-demo ${{ github.run_number }} --project=${{ env.JF_PROJECT }}
+          jf build-scan ejs-demo ${{ github.run_number }} --project=${{ env.JF_PROJECT }}
 
       - name: docker Info
         id: docker-info
