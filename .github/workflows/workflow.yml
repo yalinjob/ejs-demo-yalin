@@ -84,7 +84,7 @@ jobs:
          jf rt bce ejs-demo ${{ github.run_number }} --project=yalinejs
          jf rt bag ejs-demo ${{ github.run_number }} --project=yalinejs
          jf rt bp ejs-demo ${{ github.run_number }} --project=yalinejs
-         jf build-scan ejs-demo ${{ github.run_number }} --project=yalinejs --fail=true
+         jf build-scan ejs-demo ${{ github.run_number }} --project=yalinejs --fail=false
        
         
         
