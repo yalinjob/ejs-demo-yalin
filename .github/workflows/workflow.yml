@@ -146,7 +146,7 @@ jobs:
       
      - name: Scan build info with Xray
        run: |
-        jf build-scan ejs-demo ${{ github.run_number }} --project=yalinejs --fail=false
+        jf build-scan ejs-demo ${{ github.run_number }} --project=yalinejs --fail=true
 
 
      - name: Create test evidence
