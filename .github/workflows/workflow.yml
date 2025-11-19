@@ -80,7 +80,7 @@ jobs:
          rm package-lock.json || true
          jf npmc --repo-resolve ejs-ya-remote-demo
          jf npm i --omit dev
-         jf audit --npm --fail=false --project=${{ env.JF_PROJECT }}
+         #jf audit --npm --fail=false --project=${{ env.JF_PROJECT }}
          jf rt bce ejs-demo ${{ github.run_number }} --project=yalinejs
          jf rt bag ejs-demo ${{ github.run_number }} --project=yalinejs
          jf rt bp ejs-demo ${{ github.run_number }} --project=yalinejs
