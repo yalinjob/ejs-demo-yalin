@@ -107,7 +107,7 @@ jobs:
 
 
      - name: Publish build info
-       run: jfrog rt build-publish
+       run: jfrog rt build-publish ${{ github.run_number }} --project=yalinejs
       
      - name: Scan build info with Xray
        run: |
