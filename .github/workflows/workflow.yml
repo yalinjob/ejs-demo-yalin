@@ -81,10 +81,11 @@ jobs:
          jf npmc --repo-resolve ejs-ya-remote-demo
          jf npm i --omit dev
          jf audit --npm --sast=false --secrets=false --fail=false --project=${{ env.JF_PROJECT }}
-         jf rt bce ejs-demo ${{ github.run_number }} --project=yalinejs
-         jf rt bag ejs-demo ${{ github.run_number }} --project=yalinejs
-         jf rt bp ejs-demo ${{ github.run_number }} --project=yalinejs
-         jf build-scan ejs-demo ${{ github.run_number }} --project=yalinejs --fail=false
+         
+         #jf rt bce ejs-demo ${{ github.run_number }} --project=yalinejs
+         #jf rt bag ejs-demo ${{ github.run_number }} --project=yalinejs
+         #jf rt bp ejs-demo ${{ github.run_number }} --project=yalinejs
+         #jf build-scan ejs-demo ${{ github.run_number }} --project=yalinejs --fail=false
        
         
         
@@ -94,6 +95,24 @@ jobs:
          registry: ${{ vars.JF_HOST }}
          username: ${{ steps.setup-cli.outputs.oidc-user }}
          password: ${{ steps.setup-cli.outputs.oidc-token }}
+
+
+     
+     - name: Collecting Information from Git
+       #run: jf rt build-add-git
+       run: jf rt bce ejs-demo ${{ github.run_number }} --project=yalinejs
+      
+     - name: Collecting Environment Variables
+       run: jf rt bag ejs-demo ${{ github.run_number }} --project=yalinejs
+
+
+     - name: Publish build info
+       run: jfrog rt build-publish
+      
+     - name: Scan build info with Xray
+       run: |
+        jf build-scan ejs-demo ${{ github.run_number }} --project=yalinejs --fail=true
+
 
 
 
@@ -128,26 +147,8 @@ jobs:
        uses: github/codeql-action/upload-sarif@v3
        with:
          sarif_file: jfrog_docker_scan.sarif
-
-
-
-        
-     - name: Collecting Information from Git
-       #run: jf rt build-add-git
-       run: jf rt bce ejs-demo ${{ github.run_number }} --project=yalinejs
-      
-     - name: Collecting Environment Variables
-       run: jf rt bag ejs-demo ${{ github.run_number }} --project=yalinejs
-
-
-
-     - name: Publish build info
-       run: jfrog rt build-publish
-      
-     - name: Scan build info with Xray
-       run: |
-        jf build-scan ejs-demo ${{ github.run_number }} --project=yalinejs --fail=true
-
+   
+    
 
      - name: Create test evidence
        id: create-evd 
