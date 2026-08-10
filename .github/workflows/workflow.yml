@@ -76,7 +76,7 @@ jobs:
          jf rt bag ejs-demo ${{ github.run_number }} --project=${{ env.JF_PROJECT }}
          #jf audit
          jf npmc --repo-resolve ejs-ya-remote-demo
-         #jf ca
+         #jf ca 
          jf npm cache clean --force
          rm package-lock.json || true
          jf npmc --repo-resolve ejs-ya-remote-demo
